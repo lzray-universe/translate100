@@ -2,7 +2,7 @@ name: Deploy GitHub Pages
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]   # 如果默认分支是 master 就写 master
   workflow_dispatch:
 
 permissions:
@@ -17,14 +17,21 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./
+          path: ./   # 你站点的根目录
 
       - name: Deploy to GitHub Pages
         id: deployment
