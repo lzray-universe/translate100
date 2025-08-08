@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>翻译一百次（免注册免API）</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header>
+    <h1>翻译一百次 · 免注册免 API（爬虫版）</h1>
+    <p class="sub">纯前端 · GitHub Pages 可用 · 使用公开 CORS 代理抓取 Google 网页端接口</p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <label>原文（建议中文）</label>
+      <textarea id="inputText" placeholder="在这里粘贴要翻译的文本"></textarea>
+
+      <div class="grid">
+        <div>
+          <label>跳转次数（n）</label>
+          <input id="numHops" type="number" min="1" max="500" value="20">
+        </div>
+        <div>
+          <label>随机种子（可空）</label>
+          <input id="seed" type="number" placeholder="如 42">
+        </div>
+        <div>
+          <label>每次延迟（秒）</label>
+          <input id="sleep" type="number" min="0" step="0.1" value="0.2">
+        </div>
+        <div>
+          <label>中间语言（逗号分隔，留空用内置集合）</label>
+          <input id="langs" type="text" placeholder="en,ja,fr,de">
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label>代理模板（带 {url} 的优先）</label>
+          <select id="proxy">
+            <option value="https://api.allorigins.win/raw?url={url}">AllOrigins RAW（默认）</option>
+            <option value="https://cors.isomorphic-git.org/">isomorphic-git CORS</option>
+            <option value="">（不用代理，可能被 CORS 拒绝）</option>
+          </select>
+        </div>
+        <div>
+          <label>目标语言</label>
+          <select id="target">
+            <option value="zh-CN" selected>中文（简体）</option>
+            <option value="zh-TW">中文（繁体）</option>
+          </select>
+        </div>
+      </div>
+
+      <button id="runBtn">开始翻译</button>
+      <button id="copyBtn" disabled>复制最终结果</button>
+      <button id="saveBtn" disabled>下载 .txt</button>
+
+      <div class="outwrap">
+        <label>过程日志</label>
+        <pre id="log"></pre>
+      </div>
+
+      <div class="outwrap">
+        <label>最终结果</label>
+        <textarea id="outputText" readonly></textarea>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>说明</h2>
+      <ol>
+        <li>本页使用公开的 <b>CORS 代理</b> 抓取 Google Translate 的网页端接口（非官方）。</li>
+        <li>若报错/卡住：请改用其它代理、调大“每次延迟”、或减少跳转次数。</li>
+        <li>纯静态页面，无需服务器；可直接托管到 GitHub Pages。</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>
+    <p>Made for demo · 使用风险自担 · 若侵权请联系移除</p>
+  </footer>
+
+  <script src="assets/config.js"></script>
+  <script src="assets/roundtrip.js"></script>
+</body>
+</html>
