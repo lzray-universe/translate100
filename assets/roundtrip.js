@@ -1,13 +1,12 @@
-/* global APP_CONFIG */
+
 (function(){
   const $ = sel => document.querySelector(sel);
 
   const sleep = ms => new Promise(res => setTimeout(res, ms));
 
   function lcg(seed){
-    // 简单线性同余发生器：可复现
-    // 参数取自 Numerical Recipes
-    let m = 0x100000000; // 2^32
+
+    let m = 0x100000000; 
     let a = 1664525;
     let c = 1013904223;
     let s = (seed>>>0) || Math.floor(Math.random()*m);
@@ -77,18 +76,18 @@
     const res = await fetch(url, {
       method: "GET",
       headers: {
-        // **移除会触发预检的自定义头 X-Requested-With**
+
         "Accept": "application/json,text/plain,*/*"
       },
       signal
     });
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const txt = await res.text();
-    // 某些代理以 text/plain 形式返回JSON文本
+
     try{
       return JSON.parse(txt);
     }catch(e){
-      // 有些代理会包裹一层对象，比如 AllOrigins 的非 RAW 接口；这里尝试兜底
+
       try{
         const obj = JSON.parse(txt);
         if(obj && obj.contents){
@@ -106,7 +105,7 @@
     for(const seg of parts){
       if(Array.isArray(seg) && seg[0]) out += seg[0];
     }
-    // 反解 HTML 实体
+
     const ta = document.createElement("textarea");
     ta.innerHTML = out;
     return ta.value;
