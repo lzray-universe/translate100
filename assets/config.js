@@ -2,7 +2,7 @@
 window.APP_CONFIG = {
   // 代理模板：含 {url} 的将把目标URL进行 encodeURIComponent 后替换
   // 也可用目录型代理（以 / 结尾），会拼接为 PROXY + 真实URL
-  proxyTemplate: "https://api.allorigins.win/raw?url={url}",
+  proxyTemplate: "https://cors-header-proxy.lzraylzraylzray.workers.dev/corsproxy?apiurl={url}",
 
   // 可选备用：例如 "https://cors.isomorphic-git.org/"
   backupProxy: "https://cors.isomorphic-git.org/",
