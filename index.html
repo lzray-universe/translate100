@@ -9,29 +9,40 @@
 <body>
   <header>
     <h1>翻译一百次 · 免注册免 API（爬虫版）</h1>
-    <p class="sub">纯前端 · GitHub Pages 可用 · 使用公开 CORS 代理抓取 Google 网页端接口</p>
+    <p class="sub">纯前端 · GitHub Pages 可用 · 使用你的 Cloudflare Worker 代理 Google 网页端接口</p>
   </header>
 
   <main>
     <section class="panel">
-      <label>原文（建议中文）</label>
-      <textarea id="inputText" placeholder="在这里粘贴要翻译的文本"></textarea>
+      <div class="grid">
+        <div>
+          <label>源文本</label>
+          <textarea id="inputText" placeholder="在此粘贴文本">Hello world</textarea>
+        </div>
+        <div>
+          <label>最终结果</label>
+          <textarea id="outputText" readonly></textarea>
+        </div>
+      </div>
 
       <div class="grid">
         <div>
-          <label>跳转次数（n）</label>
-          <input id="numHops" type="number" min="1" max="500" value="20">
+          <label>跳转次数（1~100）</label>
+          <input id="numHops" type="number" min="1" max="100" value="20">
         </div>
         <div>
           <label>随机种子（可空）</label>
-          <input id="seed" type="number" placeholder="如 42">
+          <input id="seed" type="text" placeholder="留空=每次不同">
         </div>
+      </div>
+
+      <div class="grid">
         <div>
           <label>每次延迟（秒）</label>
-          <input id="sleep" type="number" min="0" step="0.1" value="0.2">
+          <input id="sleepSec" type="number" min="0" max="10" step="0.1" value="0.2">
         </div>
         <div>
-          <label>中间语言（逗号分隔，留空用内置集合）</label>
+          <label>中间语言池（逗号分隔，不含中文）</label>
           <input id="langs" type="text" placeholder="en,ja,fr,de">
         </div>
       </div>
@@ -40,9 +51,13 @@
         <div>
           <label>代理模板（带 {url} 的优先）</label>
           <select id="proxy">
-            <option value="https://api.allorigins.win/raw?url={url}">AllOrigins RAW（默认）</option>
-            <option value="https://cors.isomorphic-git.org/">isomorphic-git CORS</option>
+            <!-- 设为默认选中 -->
+            <option selected value="https://cors-header-proxy.lzraylzraylzray.workers.dev/corsproxy?apiurl={url}">
+              我的 Cloudflare Worker（推荐）
+            </option>
             <option value="">（不用代理，可能被 CORS 拒绝）</option>
+            <option value="https://api.allorigins.win/raw?url={url}">AllOrigins RAW（备用）</option>
+            <option value="https://cors.isomorphic-git.org/">isomorphic-git CORS（备用）</option>
           </select>
         </div>
         <div>
@@ -64,18 +79,12 @@
       </div>
 
       <div class="outwrap">
-        <label>最终结果</label>
-        <textarea id="outputText" readonly></textarea>
+        <label>提示</label>
+        <p class="note">
+          本页默认使用你的 Cloudflare Worker：<code>https://cors-header-proxy.lzraylzraylzray.workers.dev/corsproxy?apiurl={url}</code>。
+          记得在 Worker 的变量里把 <code>ALLOWED_HOSTS</code> 加上 <code>translate.googleapis.com</code>。
+        </p>
       </div>
-    </section>
-
-    <section class="panel">
-      <h2>说明</h2>
-      <ol>
-        <li>本页使用公开的 <b>CORS 代理</b> 抓取 Google Translate 的网页端接口（非官方）。</li>
-        <li>若报错/卡住：请改用其它代理、调大“每次延迟”、或减少跳转次数。</li>
-        <li>纯静态页面，无需服务器；可直接托管到 GitHub Pages。</li>
-      </ol>
     </section>
   </main>
 
