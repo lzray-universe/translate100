@@ -5,11 +5,142 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>翻译一百次</title>
   <link rel="stylesheet" href="assets/style.css">
+  <meta name="color-scheme" content="light dark">
+  <!-- Optional web fonts; falls back gracefully if blocked -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --fg:#0b1220;
+      --muted:#5b6475;
+      --border:rgba(0,0,0,.08);
+      --surface:rgba(255,255,255,.72);
+      --surface-2:rgba(255,255,255,.55);
+      --accent:#6366f1;
+      --radius:14px;
+      --font-sans:"Inter","Noto Sans SC",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Microsoft YaHei UI","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b0d12;
+        --fg:#e7eaf3;
+        --muted:#9aa3b2;
+        --border:rgba(255,255,255,.09);
+        --surface:rgba(17,24,39,.6);
+        --surface-2:rgba(17,24,39,.45);
+        --accent:#8b93ff;
+      }
+    }
+    [data-theme="light"]{
+      --bg:#f6f7fb;
+      --fg:#0b1220;
+      --muted:#5b6475;
+      --border:rgba(0,0,0,.08);
+      --surface:rgba(255,255,255,.72);
+      --surface-2:rgba(255,255,255,.55);
+      --accent:#6366f1;
+    }
+    [data-theme="dark"]{
+      --bg:#0b0d12;
+      --fg:#e7eaf3;
+      --muted:#9aa3b2;
+      --border:rgba(255,255,255,.09);
+      --surface:rgba(17,24,39,.6);
+      --surface-2:rgba(17,24,39,.45);
+      --accent:#8b93ff;
+    }
+    html,body{height:100%;}
+    /* Subtle background with blur-able glass UI */
+    body{
+      margin:0;
+      color:var(--fg);
+      background:var(--bg);
+      font-family:var(--font-sans);
+      line-height:1.6;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      background:
+        radial-gradient(1200px 800px at 100% -10%, rgba(99,102,241,.18), transparent 60%),
+        radial-gradient(1000px 700px at -10% 110%, rgba(56,189,248,.18), transparent 55%);
+      z-index:-2;
+      pointer-events:none;
+    }
+    /* Centered layout max width */
+    header, main, footer{max-width:1000px; margin-inline:auto;}
+    header{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:22px 18px; margin-top:12px;}
+    header h1{margin:0; font-size:clamp(22px, 3.2vw, 28px); letter-spacing:.3px;}
+    header .sub{margin:0; color:var(--muted); font-size:14px;}
+    .theme-toggle{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--border);
+      background:var(--surface);
+      backdrop-filter: blur(10px) saturate(1.1);
+      padding:8px 12px; border-radius:999px; cursor:pointer;
+      color:var(--fg); font-weight:600;
+      transition:transform .12s ease, background .2s ease, border-color .2s ease;
+    }
+    .theme-toggle:hover{transform:translateY(-1px);}
+    .theme-toggle svg{width:18px; height:18px; display:block;}
+    /* Panels */
+    .panel, .outwrap, footer, header{
+      background:var(--surface);
+      backdrop-filter: blur(12px) saturate(1.1);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow: 0 10px 30px rgba(0,0,0,.06);
+    }
+    main{padding:0 12px 24px;}
+    .panel{padding:18px; margin:10px 0 18px;}
+    .outwrap{padding:12px; margin:12px 0;}
+    footer{margin:0 12px 24px; padding:16px; text-align:center; color:var(--muted);}
+    /* Form elements */
+    input, select, textarea, button{
+      font: inherit;
+      color: var(--fg);
+    }
+    input, select, textarea{
+      width:100%;
+      background:var(--surface-2);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+      transition: box-shadow .15s ease, border-color .15s ease, background .2s ease;
+    }
+    input:focus, select:focus, textarea:focus{ box-shadow:0 0 0 4px rgba(99,102,241,.15); border-color: rgba(99,102,241,.45); }
+    label{display:block; font-weight:600; margin:10px 0 6px;}
+    /* Buttons */
+    button{
+      border:none; border-radius:12px; padding:10px 14px; font-weight:700;
+      background:var(--accent); color:white; cursor:pointer; margin-right:8px;
+      box-shadow:0 8px 18px rgba(99,102,241,.25); transition: transform .12s ease, filter .2s ease, opacity .2s ease;
+    }
+    button:hover{ transform: translateY(-1px); }
+    button:active{ transform: translateY(0); filter:brightness(.95); }
+    button:disabled{ opacity:.6; cursor:not-allowed; box-shadow:none; }
+    /* Pre / code */
+    pre#log{
+      background:var(--surface-2); padding:12px; border-radius:12px; border:1px solid var(--border);
+      overflow:auto; max-height:50vh; white-space:pre-wrap; word-break:break-word;
+    }
+    code{background:var(--surface-2); padding:.15em .35em; border-radius:8px; border:1px solid var(--border);}
+    /* Compact grid for small controls layout if any exist */
+    .controls, .row, .grid{ display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    /* Respect existing app structure; do not rename classes/ids */
+  </style>
+
 </head>
 <body>
   <header>
     <h1>翻译一百次</h1>
     <p class="sub">lzray</p>
+    <button class="theme-toggle" id="themeToggle" aria-label="切换深浅色"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span>主题</span></button>
   </header>
 
   <main>
@@ -90,6 +221,25 @@
   <footer>
     <p>Made for demo · 使用风险自担 · 若侵权请联系移除</p>
   </footer>
+
+  
+  <script>
+    (function(){
+      const root = document.documentElement;
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initial = saved === 'light' || saved === 'dark' ? saved : (prefersDark ? 'dark' : 'light');
+      root.setAttribute('data-theme', initial);
+      const btn = document.getElementById('themeToggle');
+      if(btn){
+        btn.addEventListener('click', function(){
+          const cur = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          root.setAttribute('data-theme', cur);
+          try{ localStorage.setItem('theme', cur); }catch(e){}
+        });
+      }
+    })();
+  </script>
 
   <script src="assets/config.js"></script>
   <script src="assets/roundtrip.js"></script>
