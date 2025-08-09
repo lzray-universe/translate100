@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>翻译一百次（免注册免API）</title>
+  <title>翻译一百次</title>
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
   <header>
-    <h1>翻译一百次 · 免注册免 API（爬虫版）</h1>
-    <p class="sub">纯前端 · GitHub Pages 可用 · 使用你的 Cloudflare Worker 代理 Google 网页端接口</p>
+    <h1>翻译一百次</h1>
+    <p class="sub">lzray</p>
   </header>
 
   <main>
@@ -53,7 +53,7 @@
           <select id="proxy">
             <!-- 设为默认选中 -->
             <option selected value="https://cors-header-proxy.lzraylzraylzray.workers.dev/corsproxy?apiurl={url}">
-              我的 Cloudflare Worker（推荐）
+             lzray的 Cloudflare Worker（推荐）
             </option>
             <option value="">（不用代理，可能被 CORS 拒绝）</option>
             <option value="https://api.allorigins.win/raw?url={url}">AllOrigins RAW（备用）</option>
@@ -81,8 +81,7 @@
       <div class="outwrap">
         <label>提示</label>
         <p class="note">
-          本页默认使用你的 Cloudflare Worker：<code>https://cors-header-proxy.lzraylzraylzray.workers.dev/corsproxy?apiurl={url}</code>。
-          记得在 Worker 的变量里把 <code>ALLOWED_HOSTS</code> 加上 <code>translate.googleapis.com</code>。
+          本页默认使用lzray的 Cloudflare Worker：<code>https://cors-header-proxy.lzraylzraylzray.workers.dev/corsproxy?apiurl={url}</code>。
         </p>
       </div>
     </section>
