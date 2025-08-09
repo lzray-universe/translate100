@@ -17,34 +17,25 @@
     };
   }
 
-  function pickLanguageChain(n, pool, seed){
-    const rnd = seed==null ? Math.random : lcg(seed);
-    const chain = [];
+  function pickLanguageChain(n, langs, seed){
+    const rng = lcg(seed);
+    const arr = [];
     for(let i=0;i<n;i++){
-      const k = Math.floor(rnd()*pool.length);
-      chain.push(pool[k]);
+      const idx = Math.floor(rng()*langs.length);
+      arr.push(langs[idx]);
     }
-    return chain;
+    return arr;
   }
 
-  function chunksByLen(s, limit){
-    if(s.length <= limit) return [s];
-    const out = [];
+  function chunksByLen(s, maxLen){
+    if(s.length <= maxLen) return [s];
+    const res = [];
     let i = 0;
     while(i < s.length){
-      let j = Math.min(i+limit, s.length);
-      // 尽量在句末断开
-      let k = s.lastIndexOf('.', j);
-      const seps = ['\n','。','！','？','!','?','；',';'];
-      for(const sep of seps){
-        const kk = s.lastIndexOf(sep, j);
-        if(kk > k) k = kk;
-      }
-      if(k < i + Math.floor(limit/2)) k = j; else k = k+1;
-      out.push(s.slice(i, k));
-      i = k;
+      res.push(s.slice(i, i + maxLen));
+      i += maxLen;
     }
-    return out;
+    return res;
   }
 
   function makeUpstreamURL(text, target, source){
@@ -86,8 +77,8 @@
     const res = await fetch(url, {
       method: "GET",
       headers: {
-        "Accept": "application/json,text/plain,*/*",
-        "X-Requested-With": "fetch"
+        // **移除会触发预检的自定义头 X-Requested-With**
+        "Accept": "application/json,text/plain,*/*"
       },
       signal
     });
@@ -147,9 +138,10 @@
     const n = parseInt($("#numHops").value || "20", 10);
     const seedStr = $("#seed").value.trim();
     const seed = seedStr === "" ? null : Number(seedStr);
-    const sleepSec = Number($("#sleep").value || "0");
-    const langsInput = $("#langs").value.trim();
-    const langs = langsInput ? langsInput.split(",").map(s=>s.trim()).filter(x=>x && !/^zh/i.test(x)) : (window.APP_CONFIG && window.APP_CONFIG.langs) || [];
+    const sleepSec = Number($("#sleepSec").value || "0");
+    const langsText = $("#langs").value.trim();
+    const langs = langsText ? langsText.split(",").map(s=>s.trim()).filter(Boolean)
+                            : (window.APP_CONFIG && window.APP_CONFIG.langs) || [];
     const target = $("#target").value || "zh-CN";
     const proxySel = $("#proxy").value;
     if(proxySel){
@@ -178,14 +170,13 @@
       const chain = pickLanguageChain(n, langs, seed);
       let current = input;
       logLine(`开始：跳转 ${n} 次，目标=${target}，中间语言池大小=${langs.length}`);
-      for(let i=0;i<chain.length;i++){
-        const lg = chain[i];
-        current = await googleTranslate(current, lg, null, signal);
-        const prev = current.replace(/\n/g, " ");
-        logLine(`[${i+1}/${n}] -> ${lg}: ${prev.slice(0, 100)}${prev.length>100?'...':''}`);
-        if(sleepSec>0) await sleep(sleepSec*1000);
+      for(let i=0;i<n;i++){
+        const mid = chain[i];
+        const next = await googleTranslate(current, mid, i===0 ? "auto" : null, signal);
+        logLine(`[${i+1}/${n}] ${mid}: ${next.slice(0, 160).replace(/\n/g," ")}${next.length>160?'...':''}`);
+        current = next;
+        if(sleepSec>0) await sleep(Math.round(sleepSec*1000));
       }
-      // 最后翻回中文
       const finalText = await googleTranslate(current, target, null, signal);
       $("#outputText").value = finalText;
       logLine(`[done] -> ${target}: ${finalText.slice(0, 160).replace(/\n/g," ")}${finalText.length>160?'...':''}`);
@@ -200,14 +191,9 @@
 
   function copyResult(){
     const txt = $("#outputText").value;
-    if(!txt){ alert("还没有结果"); return; }
+    if(!txt){ return; }
     navigator.clipboard.writeText(txt).then(()=>{
       alert("已复制到剪贴板");
-    }, ()=>{
-      // 兜底
-      $("#outputText").select();
-      document.execCommand("copy");
-      alert("已复制（execCommand）");
     });
   }
 
