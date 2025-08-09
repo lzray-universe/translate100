@@ -2,7 +2,7 @@ name: Deploy GitHub Pages
 
 on:
   push:
-    branches: [ main ]   # 如果默认分支是 master 就写 master
+    branches: [ main ]   
   workflow_dispatch:
 
 permissions:
@@ -31,7 +31,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./   # 你站点的根目录
+          path: ./  
 
       - name: Deploy to GitHub Pages
         id: deployment
