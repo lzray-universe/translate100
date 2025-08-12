@@ -52,7 +52,6 @@
       --accent:#8b93ff;
     }
     html,body{height:100%;}
-    /* Subtle background with blur-able glass UI */
     body{
       margin:0;
       color:var(--fg);
@@ -71,7 +70,6 @@
       z-index:-2;
       pointer-events:none;
     }
-    /* Centered layout max width */
     header, main, footer{max-width:1000px; margin-inline:auto;}
     header{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:22px 18px; margin-top:12px;}
     header h1{margin:0; font-size:clamp(22px, 3.2vw, 28px); letter-spacing:.3px;}
@@ -87,7 +85,6 @@
     }
     .theme-toggle:hover{transform:translateY(-1px);}
     .theme-toggle svg{width:18px; height:18px; display:block;}
-    /* Panels */
     .panel, .outwrap, footer, header{
       background:var(--surface);
       backdrop-filter: blur(12px) saturate(1.1);
@@ -97,9 +94,9 @@
     }
     main{padding:0 12px 24px;}
     .panel{padding:18px; margin:10px 0 18px;}
-    .outwrap{padding:12px; margin:12px 0;}
+    .outwrap{padding:12px; margin:12px 0;
     footer{margin:0 12px 24px; padding:16px; text-align:center; color:var(--muted);}
-    /* Form elements */
+
     input, select, textarea, button{
       font: inherit;
       color: var(--fg);
@@ -115,7 +112,6 @@
     }
     input:focus, select:focus, textarea:focus{ box-shadow:0 0 0 4px rgba(99,102,241,.15); border-color: rgba(99,102,241,.45); }
     label{display:block; font-weight:600; margin:10px 0 6px;}
-    /* Buttons */
     button{
       border:none; border-radius:12px; padding:10px 14px; font-weight:700;
       background:var(--accent); color:white; cursor:pointer; margin-right:8px;
@@ -124,7 +120,6 @@
     button:hover{ transform: translateY(-1px); }
     button:active{ transform: translateY(0); filter:brightness(.95); }
     button:disabled{ opacity:.6; cursor:not-allowed; box-shadow:none; }
-    /* Pre / code */
     pre#log{
       background:var(--surface-2); padding:12px; border-radius:12px; border:1px solid var(--border);
       overflow:auto; max-height:50vh; white-space:pre-wrap; word-break:break-word;
@@ -212,7 +207,7 @@
       <div class="outwrap">
         <label>提示</label>
         <p class="note">
-          本页默认使用lzray的 Cloudflare Worker：<code>https://cors-header-proxy.lzraylzraylzray.workers.dev/corsproxy?apiurl={url}</code>。
+          本页默认使用lzray的 Cloudflare Worker：https://cors-header-proxy.lzraylzraylzray.workers.dev/corsproxy?apiurl={url}。
         </p>
       </div>
     </section>
